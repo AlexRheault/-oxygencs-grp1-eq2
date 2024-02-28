@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    environment:
+      - HOST=http://159.203.50.162
+      - TOKEN=585276b9e32adb39d57c
+      - T_MIN=21
+      - T_MAX=24
+      - DATABASE_URL=
