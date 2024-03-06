@@ -1,2 +1,22 @@
-- name: Workflow Metrics
-  uses: KittyChiu/workflow-metrics@v0.4.7
+name: My Workflow
+on: workflow_dispatch
+jobs:
+  evaluate-actions-consumption:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call workflow-runs action
+        uses: kittychiu/workflow-metrics@v0.4.7
+        env:
+          GH_TOKEN: ${{ secrets.TOKEN }}
+          OWNER_NAME: "AlexRheault"
+          REPO_NAME: "oxygencs-grp1-eq2"
+          START_DATE: "2023-07-01"
+          END_DATE: "2023-08-01"
+
+      - name: Upload all .txt .csv .md files to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: workflow-stats
+          path: |
+            workflow-stats.csv
+            runs.json
