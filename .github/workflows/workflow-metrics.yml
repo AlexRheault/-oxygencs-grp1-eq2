@@ -1,4 +1,4 @@
-name: My Workflow
+name: Metrics
 on: workflow_dispatch
 jobs:
   evaluate-actions-consumption:
