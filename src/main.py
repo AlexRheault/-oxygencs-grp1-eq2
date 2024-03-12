@@ -4,6 +4,7 @@ import requests
 import json
 import time
 import os
+import psycopg2
 
 
 class App:
@@ -17,7 +18,7 @@ class App:
         self.T_MAX = os.environ.get("T_MAX")
         self.T_MIN = os.environ.get("T_MIN")
         self.DATABASE_URL = os.environ.get("DATABASE_URL")
-
+        
     def __del__(self):
         if self._hub_connection != None:
             self._hub_connection.stop()
@@ -80,12 +81,29 @@ class App:
     def save_event_to_database(self, timestamp, temperature):
         """Save sensor data into database."""
         try:
-            # To implement
-            pass
-        except requests.exceptions.RequestException as e:
-            # To implement
-            pass
+            conn = self.database_connection()
+            if conn:
+                cursor = conn.cursor()
 
+                # Insert data into the table
+                insert_query = """INSERT INTO "Oxygene" (temperature, date) VALUES (%s, %s)"""
+                cursor.execute(insert_query, (temperature, timestamp))
+                conn.commit()
+
+                print("Data inserted successfully!")
+
+                cursor.close()
+
+        except Exception as e:
+            print("Error inserting data into PostgreSQL database:", e)
+
+    def database_connection(self):
+        try:
+            conn = psycopg2.connect(self.DATABASE_URL)
+            return conn
+        except Exception as e:
+            print("Error connecting to PostgreSQL database:", e)
+            return None
 
 if __name__ == "__main__":
     app = App()

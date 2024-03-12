@@ -24,7 +24,7 @@
         "TOKEN":"585276b9e32adb39d57c",
         "T_MIN":"21",
         "T_MAX":"24",
-        "DATABASE_URL":""
+        "DATABASE_URL":"postgresql://user01eq2:N9oQOMp1otdWGvdc@157.230.69.113:5432/db01eq2"
     },
     "runArgs": [
         "--network=host"
