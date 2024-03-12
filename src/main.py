@@ -6,11 +6,11 @@ import time
 import os
 import psycopg2
 
-
 class App:
     def __init__(self):
         self._hub_connection = None
         self.TICKS = 10
+        self.conn = None
 
         # To be configured by your team
         self.HOST = os.environ.get("HOST")
@@ -18,10 +18,16 @@ class App:
         self.T_MAX = os.environ.get("T_MAX")
         self.T_MIN = os.environ.get("T_MIN")
         self.DATABASE_URL = os.environ.get("DATABASE_URL")
+
+        # Set up database connection 
+        self.database_connection()
         
     def __del__(self):
         if self._hub_connection != None:
             self._hub_connection.stop()
+
+        if self.conn is not None:
+            self.conn.close()
 
     def start(self):
         """Start Oxygen CS."""
@@ -81,14 +87,13 @@ class App:
     def save_event_to_database(self, timestamp, temperature):
         """Save sensor data into database."""
         try:
-            conn = self.database_connection()
-            if conn:
-                cursor = conn.cursor()
+            if self.conn is not None:
+                cursor = self.conn.cursor()
 
                 # Insert data into the table
                 insert_query = """INSERT INTO "Oxygene" (temperature, date) VALUES (%s, %s)"""
                 cursor.execute(insert_query, (temperature, timestamp))
-                conn.commit()
+                self.conn.commit()
 
                 print("Data inserted successfully!")
 
@@ -99,8 +104,7 @@ class App:
 
     def database_connection(self):
         try:
-            conn = psycopg2.connect(self.DATABASE_URL)
-            return conn
+            self.conn = psycopg2.connect(self.DATABASE_URL)
         except Exception as e:
             print("Error connecting to PostgreSQL database:", e)
             return None
