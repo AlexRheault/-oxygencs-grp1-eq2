@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -69,7 +70,7 @@ class App:
             timestamp = data[0]["date"]
             temperature = float(data[0]["data"])
             self.take_action(temperature)
-            self.save_event_to_database(timestamp, temperature)
+            self.save_temp_to_database(timestamp, temperature)
         except Exception as err:
             print(err)
 
@@ -83,10 +84,26 @@ class App:
     def send_action_to_hvac(self, action):
         """Send action query to the HVAC service."""
         r = requests.get(f"{self.host}/api/hvac/{self.token}/{action}/{self.ticks}")
+        self.save_event_to_database(action)
         details = json.loads(r.text)
         print(details, flush=True)
 
-    def save_event_to_database(self, timestamp, temperature):
+    def save_event_to_database(self, action):
+        """Save actions taken into database."""
+        try:
+            if self.conn is not None:
+                cursor = self.conn.cursor()
+                # Insert data into the table
+                insert_query = (
+                    """INSERT INTO "HVACEvents" (event, date) VALUES (%s, %s)"""
+                )
+                cursor.execute(insert_query, (action, datetime.datetime.now()))
+                self.conn.commit()
+                cursor.close()
+        except Exception as e:
+            print("Error inserting data into PostgreSQL database:", e)
+
+    def save_temp_to_database(self, timestamp, temperature):
         """Save sensor data into database."""
         try:
             if self.conn is not None:
@@ -94,15 +111,11 @@ class App:
 
                 # Insert data into the table
                 insert_query = (
-                    """INSERT INTO "Oxygene" (temperature, date) VALUES (%s, %s)"""
+                    """INSERT INTO "HVACTemps" (temperature, date) VALUES (%s, %s)"""
                 )
                 cursor.execute(insert_query, (temperature, timestamp))
                 self.conn.commit()
-
-                print("Data inserted successfully!")
-
                 cursor.close()
-
         except Exception as e:
             print("Error inserting data into PostgreSQL database:", e)
 

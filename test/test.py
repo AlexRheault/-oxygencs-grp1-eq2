@@ -24,16 +24,16 @@ def teardown():
 
 def run():
     setup()
-    test_save_event_to_database()
+    test_save_temp_to_database()
     delete_test_event_to_database()
     teardown()
 
 
-def test_save_event_to_database():
+def test_save_temp_to_database():
     global passed, TOTAL
 
     app = App()
-    app.save_event_to_database("2024-03-12 20:09:22", 9999.9)
+    app.save_temp_to_database("2024-03-12 20:09:22", 9999.9)
 
     TOTAL += 1
     database_url = os.environ.get("DATABASE_URL")
