@@ -1,17 +1,17 @@
-import time
-import sys
 import os
+import sys
+import time
 import psycopg2
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.main import App
 
-total = 0
+TOTAL = 0
 
 
 def setup():
-    global start, passed, total
+    global start, passed, TOTAL
     passed = 0
     start = time.time()
 
@@ -19,7 +19,7 @@ def setup():
 def teardown():
     end = time.time()
     print(f"Time: {end-start}s")
-    print(f"Test passed : {passed}/{total}")
+    print(f"Test passed : {passed}/{TOTAL}")
 
 
 def run():
@@ -30,14 +30,14 @@ def run():
 
 
 def test_save_event_to_database():
-    global passed, total
+    global passed, TOTAL
 
     app = App()
     app.save_event_to_database("2024-03-12 20:09:22", 9999.9)
 
-    total += 1
-    DATABASE_URL = os.environ.get("DATABASE_URL")
-    conn = psycopg2.connect(DATABASE_URL)
+    TOTAL += 1
+    database_url = os.environ.get("DATABASE_URL")
+    conn = psycopg2.connect(database_url)
     cur = conn.cursor()
     cur.execute('SELECT * FROM "Oxygene" WHERE temperature=9999.9;')
     fetch = cur.fetchall()
@@ -46,10 +46,10 @@ def test_save_event_to_database():
 
 
 def delete_test_event_to_database():
-    global passed, total
+    global passed, TOTAL
 
-    DATABASE_URL = os.environ.get("DATABASE_URL")
-    conn = psycopg2.connect(DATABASE_URL)
+    database_url = os.environ.get("DATABASE_URL")
+    conn = psycopg2.connect(database_url)
 
     cur = conn.cursor()
 
@@ -57,7 +57,7 @@ def delete_test_event_to_database():
     print("Data deleted successfully!")
     conn.commit()
 
-    total += 1
+    TOTAL += 1
     cur.execute('SELECT * FROM "Oxygene" WHERE temperature=9999.9;')
     fetch = cur.fetchall()
     if len(fetch) == 0:
