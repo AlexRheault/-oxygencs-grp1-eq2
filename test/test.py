@@ -39,7 +39,7 @@ def test_save_temp_to_database():
     database_url = os.environ.get("DATABASE_URL")
     conn = psycopg2.connect(database_url)
     cur = conn.cursor()
-    cur.execute('SELECT * FROM "Oxygene" WHERE temperature=9999.9;')
+    cur.execute('SELECT * FROM "HVACTemps" WHERE temperature=9999.9;')
     fetch = cur.fetchall()
     if len(fetch) > 0:
         passed += 1
@@ -53,12 +53,12 @@ def delete_test_event_to_database():
 
     cur = conn.cursor()
 
-    cur.execute("""DELETE FROM "Oxygene" WHERE temperature=9999.9""")
+    cur.execute("""DELETE FROM "HVACTemps" WHERE temperature=9999.9""")
     print("Data deleted successfully!")
     conn.commit()
 
     TOTAL += 1
-    cur.execute('SELECT * FROM "Oxygene" WHERE temperature=9999.9;')
+    cur.execute('SELECT * FROM "HVACTemps" WHERE temperature=9999.9;')
     fetch = cur.fetchall()
     if len(fetch) == 0:
         passed += 1
