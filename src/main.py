@@ -1,29 +1,31 @@
-from signalrcore.hub_connection_builder import HubConnectionBuilder
-import logging
-import requests
 import json
-import time
+import logging
 import os
+import time
+
 import psycopg2
+import requests
+from signalrcore.hub_connection_builder import HubConnectionBuilder
+
 
 class App:
     def __init__(self):
         self._hub_connection = None
-        self.TICKS = 10
+        self.ticks = 10
         self.conn = None
 
         # To be configured by your team
-        self.HOST = os.environ.get("HOST")
-        self.TOKEN = os.environ.get("TOKEN")
-        self.T_MAX = os.environ.get("T_MAX")
-        self.T_MIN = os.environ.get("T_MIN")
-        self.DATABASE_URL = os.environ.get("DATABASE_URL")
+        self.host = os.environ.get("HOST")
+        self.token = os.environ.get("TOKEN")
+        self.t_max = os.environ.get("T_MAX")
+        self.t_min = os.environ.get("T_MIN")
+        self.database_url = os.environ.get("DATABASE_URL")
 
-        # Set up database connection 
+        # Set up database connection
         self.database_connection()
-        
+
     def __del__(self):
-        if self._hub_connection != None:
+        if self._hub_connection is not None:
             self._hub_connection.stop()
 
         if self.conn is not None:
@@ -41,7 +43,7 @@ class App:
         """Configure hub connection and subscribe to sensor data events."""
         self._hub_connection = (
             HubConnectionBuilder()
-            .with_url(f"{self.HOST}/SensorHub?token={self.TOKEN}")
+            .with_url(f"{self.host}/SensorHub?token={self.token}")
             .configure_logging(logging.INFO)
             .with_automatic_reconnect(
                 {
@@ -73,14 +75,14 @@ class App:
 
     def take_action(self, temperature):
         """Take action to HVAC depending on current temperature."""
-        if float(temperature) >= float(self.T_MAX):
+        if float(temperature) >= float(self.t_max):
             self.send_action_to_hvac("TurnOnAc")
-        elif float(temperature) <= float(self.T_MIN):
+        elif float(temperature) <= float(self.t_min):
             self.send_action_to_hvac("TurnOnHeater")
 
     def send_action_to_hvac(self, action):
         """Send action query to the HVAC service."""
-        r = requests.get(f"{self.HOST}/api/hvac/{self.TOKEN}/{action}/{self.TICKS}")
+        r = requests.get(f"{self.host}/api/hvac/{self.token}/{action}/{self.ticks}")
         details = json.loads(r.text)
         print(details, flush=True)
 
@@ -91,7 +93,9 @@ class App:
                 cursor = self.conn.cursor()
 
                 # Insert data into the table
-                insert_query = """INSERT INTO "Oxygene" (temperature, date) VALUES (%s, %s)"""
+                insert_query = (
+                    """INSERT INTO "Oxygene" (temperature, date) VALUES (%s, %s)"""
+                )
                 cursor.execute(insert_query, (temperature, timestamp))
                 self.conn.commit()
 
@@ -104,10 +108,10 @@ class App:
 
     def database_connection(self):
         try:
-            self.conn = psycopg2.connect(self.DATABASE_URL)
+            self.conn = psycopg2.connect(self.database_url)
         except Exception as e:
             print("Error connecting to PostgreSQL database:", e)
-            return None
+
 
 if __name__ == "__main__":
     app = App()
