@@ -21,7 +21,7 @@ Groupe n°2 - Équipe n°2
 
 ### Introduction
 
-
+Ce laboratoire vise à finaliser la mise en place d'un pipeline d'intégration et de déploiement continu ainsi que le monitoring de données pour la compagnie Oxygène Software. À travers ce processus, nous utiliserons Kubernetes et kubectl pour configurer et déployer le HVAC Controller et le MetricsAPI sur un cluster Kubernetes. Notre objectif est de rendre ces applications disponibles et scalables, tout en assurant leur accessibilité. Nous mettrons également en place des métriques grâce à Grafana pour pouvoir analyser les données générées. En parallèle, nous automatiserons le déploiement des nouvelles versions des applications concernées, en suivant les bonnes pratiques de développement telles que les pull-requests, la structure de branche et le kanban.
 
 ### Répartition du travail
 
