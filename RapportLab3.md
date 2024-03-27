@@ -25,7 +25,7 @@ Ce laboratoire vise à finaliser la mise en place d'un pipeline d'intégration e
 
 ### Répartition du travail
 
-
+Pour la répartition des tâches, nous avons tout d'abord défini en équipe les différentes étapes à réaliser durant ce laboratoire sur notre tableau Kanban, ainsi que la création des étiquettes, en spécifiant leur description et leur priorité. Ensuite, pour la mise en place de Kubernetes, un membre de notre équipe s'est chargé de configurer le cluster Kubernetes en utilisant le fichier de configuration kubeconfig.yaml fourni. Il a également déployé les ressources nécessaires telles que les ConfigMap et les Secrets pour garantir le bon fonctionnement de nos applications. Par la suite, un autre membre de l'équipe s'est concentré sur la configuration des métriques dans Grafana. Il a pris en charge la mise en place des paramètres appropriés et s'est assuré que les données affichées dans Grafana correspondaient correctement aux métriques collectées. En parallèle, un troisième membre de l'équipe s'est penché sur la rédaction du rapport final. Il a travaillé sur l'implémentation des métriques dans la base de données, en veillant à ce qu'elles soient correctement enregistrées. De plus, il a réalisé les tests unitaires en Python nécessaires pour s'assurer du bon fonctionnement de l'ensemble du système.
 
 ### Grafana
 
