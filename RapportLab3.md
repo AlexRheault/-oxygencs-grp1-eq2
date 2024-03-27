@@ -27,6 +27,10 @@ Groupe n°2 - Équipe n°2
 
 
 
+### Grafana
+
+Nous avons ajouté nos métriques sur la plateforme de visualisation de données Grafana. Pour ce faire, nous avons connecté notre base de données directement avec Grafana. Nous avons ensuite ajouté les colonnes intérrssantes comme la température et le status du HVAC à des graphes.
+
 ### Implémentation CI
 
 
