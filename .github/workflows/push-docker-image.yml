@@ -1,20 +1,22 @@
-name: Docker image push
+name: Image push and deploy
 
 on:
   push:
     branches: [ "main" ]
 jobs:
-  build_and_push:
-    name: Push Docker image to Docker Hub
+  build_push_and_deploy:
+    name: Push Docker image to Docker Hub and deploy on kube cluster
     runs-on: ubuntu-latest
     steps:
     - name: Check out the repo
       uses: actions/checkout@v3
+
     - name: Log in to Docker hub
       uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
       with:
         username: ${{ vars.USER }}
         password: ${{ secrets.PASS }}
+
     - name: Build and push the Docker image on latest
       uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
       with:
@@ -22,6 +24,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ${{ vars.USER }}/oxygencs
+
     - name: Build and push the Docker image on tag
       uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
       with:
@@ -29,3 +32,13 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ${{ vars.USER }}/oxygencs:${{ github.run_id }}
+
+    - name: Set up Kubectl
+      uses: azure/k8s-set-context@v1
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+
+    - name: apply oxygene-deployment
+      run: |
+        kubectl apply -f ${{ github.workspace }}/kubernetes/oxygene-deployment.yaml
+        kubectl describe pods oxygene-pod
