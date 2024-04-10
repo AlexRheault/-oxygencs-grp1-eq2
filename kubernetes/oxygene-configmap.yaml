@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oxygene-configmap
+data:
+  t_min: "21"
+  t_max: "24"
+  hvac_host: "http://159.203.50.162"

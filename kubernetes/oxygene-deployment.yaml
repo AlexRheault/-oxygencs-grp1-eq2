@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: oxygene-pod
+spec:
+  containers:
+    - name: oxygene
+      image: retiredzombie/oxygencs
+      env:
+        - name: T_MIN
+          valueFrom:
+            configMapKeyRef:
+              name: oxygene-configmap
+              key: t_min
+        - name: T_MAX
+          valueFrom:
+            configMapKeyRef:
+              name: oxygene-configmap
+              key: t_max
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              name: oxygene-configmap
+              key: hvac_host
+        - name: TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: oxygene-secrets
+              key: hvac_token
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: oxygene-secrets
+              key: db_url
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "200Mi"
+        requests:
+          cpu: "100m"
+          memory: "200Mi"
