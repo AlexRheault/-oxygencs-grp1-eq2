@@ -18,8 +18,8 @@ class App:
         # To be configured by your team
         self.host = os.environ.get("HOST")
         self.token = os.environ.get("TOKEN")
-        self.t_max = os.environ.get("T_MAX") + 15
-        self.t_min = os.environ.get("T_MIN") + 15
+        self.t_max = os.environ.get("T_MAX")
+        self.t_min = os.environ.get("T_MIN")
         self.database_url = os.environ.get("DATABASE_URL")
 
         # Set up database connection
